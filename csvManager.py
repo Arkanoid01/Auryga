@@ -11,17 +11,33 @@ def read(file):
 
         return lines
 
-def write2csv(text,labels):
+def writeTagDescriptions2csv(tagDescriptions):
 
-    with open("results.csv", 'w') as writer:
+    with open("tagDescriptions.csv", 'w') as writer:
         csvWriter = csv.writer(writer, delimiter=',')
-        for i in range(0, len(text)):
-            data = [text[i].replace(",", "")]
-            for label in labels[i]:
-                data.append(label)
+        for tag in tagDescriptions.keys():
+            data = []
+            data.append(tag)
+            for elem in tagDescriptions.get(tag):
+                data.append(elem)
             csvWriter.writerow(data)
 
-def getData():
+def writeLabels2csv(labels):
+    with open("labels.csv", 'w') as writer:
+        csvWriter = csv.writer(writer, delimiter=',')
+        for label in labels:
+            csvWriter.writerow(label)
+
+def readFromCsv(path):
+    csv_file = open(path)
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    results = []
+    for row in csv_reader:
+        results.append(row)
+
+    return results
+
+def getLabelsAndTagDescriptions():
     descriptions = read("Data/steam/steam_description_data.csv")
     #games = read("Data/steam/steam.csv")
     tags = read("Data/steam/steamspy_tag_data.csv")
@@ -39,6 +55,7 @@ def getData():
     counter = 0
     for description in descriptions:
         if(counter>len(descriptions)):
+        #if(counter>100):
             break
         for gameTags in tags:
             if(description[0]==gameTags[0]):
@@ -67,9 +84,5 @@ def getData():
                 internalTag.append(text[i])
                 results[label] = internalTag
 
-    return labels
-    #return results
-
-# print(text[0])
-# print(labels[0])
+    return labels, results
 

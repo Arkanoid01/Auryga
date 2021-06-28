@@ -1,7 +1,43 @@
 import pandas as pd
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori
+from mlxtend.frequent_patterns import apriori, fpgrowth
 import csvManager
+
+
+def polish(rawList,parentsList):
+    polishedList = []
+    for elems in rawList:
+        for elem in list(elems):
+            if(not elem in polishedList):
+                polishedList.append(elem)
+
+    for elem in parentsList:
+        if(elem in polishedList):
+            polishedList.remove(elem)
+
+    return polishedList
+
+
+def getFrequentSet(parent, parents, labels, sensitivity):
+
+    pd.set_option('display.max_rows', None)
+    te = TransactionEncoder()
+    te_ary = te.fit(labels).transform(labels)
+    df = pd.DataFrame(te_ary, columns=te.columns_)
+    #results = apriori(df, min_support=sensitivity,use_colnames=True)
+    results = fpgrowth(df,min_support=sensitivity, use_colnames=True)
+
+    resultsRaw = []
+
+    for elem in set(results['itemsets']):
+        if(parent in list(elem)):
+            resultsRaw.append(elem)
+
+    print(len(resultsRaw))
+    resultsPolished = polish(resultsRaw, parents)
+
+    return resultsPolished
+
 
 def main():
 
@@ -12,7 +48,7 @@ def main():
     te = TransactionEncoder()
     te_ary = te.fit(labels).transform(labels)
     df = pd.DataFrame(te_ary, columns=te.columns_)
-    results = apriori(df, min_support=0.02,use_colnames=True)
+    results = apriori(df, min_support=0.2,use_colnames=True)
 
     print(len(results))
 
@@ -58,5 +94,3 @@ def main():
                 polishedAction.append(elem)
 
     print(polishedAction)
-
-main()
