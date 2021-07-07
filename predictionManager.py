@@ -5,25 +5,23 @@ from sklearn.naive_bayes import MultinomialNB, GaussianNB, ComplementNB
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-
-
-def predict(data,textualTest):
-
+def train(data):
     ###Extracting features
-    print('Extracting features from dataset')
+    #print('Extracting features from dataset')
     count_vect = TfidfVectorizer(input ='train',stop_words = {'english'},lowercase=True,analyzer ='word')
 
     train_data = []
     label_data = []
+    #print(data.keys())
     for label in data.keys():
         texts = data.get(label)
-        print(label)
-        print(len(texts))
+        #print(label)
+        #print(len(texts))
         for text in texts:
             train_data.append(text)
             label_data.append(label)
 
-    #print(len(train_data))
+    #print(len(label_data))
     #print(len(list(data.keys())))
 
 
@@ -34,19 +32,26 @@ def predict(data,textualTest):
     train_tfidf.shape
     # with open('train.pickle', 'wb') as fin:
     #      pickle.dump(train_vectors, fin)
-    print('Training a Multinomial Naive Bayes (MNB)')
+    #print('Training a Multinomial Naive Bayes (MNB)')
     ###train model
-    out_dict={}
+
     #feature_extraction(train_data)
     #model = MultinomialNB()
     #model = GaussianNB()
     model = ComplementNB()
 
+    model.fit(train_tfidf, label_data)
+
+    return model, tfidf_transformer, count_vect
+
+def predict(textualTest,model,tfidf_transformer,count_vect):
+    out_dict = {}
+    #count_vect = TfidfVectorizer(input='train', stop_words={'english'}, lowercase=True, analyzer='word')
+    #tfidf_transformer = TfidfTransformer()
     X_new_counts = count_vect.transform([textualTest])
     X_new_tfidf = tfidf_transformer.transform(X_new_counts)
 
-
-    model.fit(train_tfidf, label_data).predict(X_new_tfidf)
+    model.predict(X_new_tfidf)
     #model.fit(train_tfidf, label_data).predict(X_new_tfidf)
 
     for prob in model.predict_proba(X_new_tfidf):
@@ -55,5 +60,5 @@ def predict(data,textualTest):
             out_dict.update({cat: str(p)})
             ranked_dict = sorted(out_dict.items(), key=operator.itemgetter(1), reverse=True)
 
-    print (ranked_dict)
+    #print (ranked_dict)
     return ranked_dict

@@ -11,9 +11,9 @@ def read(file):
 
         return lines
 
-def writeTagDescriptions2csv(tagDescriptions):
+def writeTagDescriptions2csv(tagDescriptions,path):
 
-    with open("tagDescriptions.csv", 'w') as writer:
+    with open(path+"/tagDescriptions.csv", 'w') as writer:
         csvWriter = csv.writer(writer, delimiter=',')
         for tag in tagDescriptions.keys():
             data = []
@@ -22,8 +22,8 @@ def writeTagDescriptions2csv(tagDescriptions):
                 data.append(elem)
             csvWriter.writerow(data)
 
-def writeLabels2csv(labels):
-    with open("labels.csv", 'w') as writer:
+def writeLabels2csv(labels,path):
+    with open(path+"/labels.csv", 'w') as writer:
         csvWriter = csv.writer(writer, delimiter=',')
         for label in labels:
             csvWriter.writerow(label)
@@ -37,15 +37,15 @@ def readFromCsv(path):
 
     return results
 
-def getLabelsAndTagDescriptions():
-    descriptions = read("Data/steam/steam_description_data.csv")
+def getLabelsAndTagDescriptions(pathDescription,pathTags):
+    descriptions = read(pathDescription)
     #games = read("Data/steam/steam.csv")
-    tags = read("Data/steam/steamspy_tag_data.csv")
+    tags = read(pathTags)
 
     text = []
     labels = []
 
-    tag_pos = []
+    tag_pos = [] #contiene la lista di tutti i tag che ci sono
 
     for tag in tags[0]:
         if(tag=="appid"):
@@ -84,5 +84,5 @@ def getLabelsAndTagDescriptions():
                 internalTag.append(text[i])
                 results[label] = internalTag
 
-    return labels, results
 
+    return labels, results
