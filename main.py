@@ -31,7 +31,7 @@ def calculateSubTopics(labels):
     mainTags = ["action","adventure","platformer","rpg","simulation","strategy","sports"]
     blackList = ["indie","casual","early_access"]
     supports = {'action':0.015, 'adventure':0.013, 'platformer':0.0025, 'rpg':0.0075, 'simulation':0.007, 'strategy':0.0075, 'sports':0.001}
-
+    #supports = {'action':0.03, 'adventure':0.03, 'platformer':0.01, 'rpg':0.01, 'simulation':0.01, 'strategy':0.01, 'sports':0.005}
     subTags = {}
 
     for mainTopic in mainTags:

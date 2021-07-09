@@ -13,8 +13,9 @@ def evaluate(round):
 
     frequentSubTags = main.calculateSubTopics(labels)
 
+
     counter = 0
-    threshold = 8
+    threshold = 5
     successRateThreshold = 1
     globalPrecision = 0
     globalRecall = 0
