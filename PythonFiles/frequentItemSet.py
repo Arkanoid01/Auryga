@@ -3,8 +3,7 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, fpgrowth
 from pyspark.ml.fpm import FPGrowth
 
-
-import csvManager
+from PythonFiles import csvManager
 
 
 def polish(rawList,parentsList):

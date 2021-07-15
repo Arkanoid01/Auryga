@@ -1,9 +1,7 @@
-import csvManager
-import main
-import predictionManager
+from PythonFiles import csvManager, trainingManager
+
 
 def evaluate(round):
-    #supponendo che siano sicuramente allineati
 
     steam_data = "Data/steam/Evaluation/Round"+round+"/Test/steam_data.csv"
     labels = "Data/steam/Evaluation/Round"+round+"/Training/labels.csv"
@@ -11,7 +9,7 @@ def evaluate(round):
 
     tests = csvManager.readFromCsv(steam_data)
 
-    frequentSubTags = main.calculateSubTopics(labels)
+    frequentSubTags = trainingManager.calculateSubTopics(labels)
 
 
     counter = 0
@@ -22,7 +20,7 @@ def evaluate(round):
     globalSuccessRate = 0
 
     #model,tfidf_transformer,count_vect = main.trainMainTopics("Data/steam/Evaluation/Round1/Training/labels.csv", "Data/steam/Evaluation/Round1/Training/tagDescriptions.csv")
-    models = main.trainModels(labels, tagDescriptions, frequentSubTags)
+    models = trainingManager.trainModels(labels, tagDescriptions, frequentSubTags)
 
     for test in tests:
         #print(test[1])
@@ -30,14 +28,14 @@ def evaluate(round):
             continue
         trueTopics = list(filter(None,test[2:]))
 
-        mainTag = main.predictTopic(test[1], models.get("mainTags")[0], models.get("mainTags")[1], models.get("mainTags")[2])[0][0]
+        mainTag = trainingManager.predictTopic(test[1], models.get("mainTags")[0], models.get("mainTags")[1], models.get("mainTags")[2])[0][0]
 
         trueTopics = list(set(frequentSubTags.get(mainTag)) & set(trueTopics))
 
         if(mainTag in trueTopics):
             counter+=1
 
-            predicted = main.predictTopic(test[1], models.get(mainTag)[0], models.get(mainTag)[1], models.get(mainTag)[2])
+            predicted = trainingManager.predictTopic(test[1], models.get(mainTag)[0], models.get(mainTag)[1], models.get(mainTag)[2])
             predictedTags = []
             for tuple in predicted[:threshold]:
                 predictedTags.append(tuple[0])
